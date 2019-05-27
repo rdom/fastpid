@@ -16,8 +16,8 @@ void plot_map(int pdg=211){
     if(m>3){
       delete hK;
       delete hPi;
-      hK = new TH1F("hK","hK",200,-10,10);
-      hPi = new TH1F("hPi","hPi",200,-10,10);
+      hK = new TH1F("hK","hK",200,-15,15);
+      hPi = new TH1F("hPi","hPi",200,-15,15);
     }
     if(m<1){
       delete hK;
@@ -71,11 +71,13 @@ void plot_map(int pdg=211){
 
   gStyle->SetOptStat(0);
   prt_canvasAdd("map_sep",800,500);
-  hsep->GetYaxis()->SetRangeUser(0.6,10);
-  hsep->SetMaximum(10);
   gPad->SetLogz();
   hsep->Draw("colz");
+  hsep->GetYaxis()->SetRangeUser(0.6,10);
+  hsep->SetMaximum(10);
+  hsep->SetMinimum(1);
 
+  
   prt_savepath ="data/plot_map";
-  prt_canvasSave();  
+  prt_canvasSave(0);  
 }

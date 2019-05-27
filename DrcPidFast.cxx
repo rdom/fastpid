@@ -9,7 +9,7 @@ DrcPidFast::DrcPidFast(){
   fMass[4]=0.938272;
   
   // read Cherenkov track resolution map
-  TFile* file = TFile::Open("ctr_map.root");
+  TFile* file = TFile::Open("ctr_map_p1_0.95.root");
   fTrrMap = new TH2F();
   file->GetObject("htrr", fTrrMap);  
 }

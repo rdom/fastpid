@@ -10,7 +10,7 @@
 #include "TRandom.h"
 #include <iostream>
 
-// prob - normalized to 1 probability for e,mu,pi,k,p
+// probability - normalized to 1 probability for e,mu,pi,k,p
 // sigma - deviation of the determined Cherenkov angle from expected in terms of Cherenkov track resolution
 struct DrcPidInfo {
     double probability[5];

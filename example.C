@@ -12,7 +12,7 @@ void example(int pdg=211,double mom=6){
 
   DrcPidInfo info;
   for(int i=0; i<1000; i++){
-    info = pid.GetInfo(pdg,momentum,0);
+    info = pid.GetInfo(pdg,momentum,0.5);
     hPi->Fill(info.sigma[2]);
     hK->Fill(info.sigma[3]);
   }
