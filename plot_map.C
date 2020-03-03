@@ -1,4 +1,5 @@
-#include "../prttools/prttools.C"
+//#include "../prttools/prttools.C"
+#include "prttools.C"
 #include "DrcPidFast.h"
 
 void plot_map(int pdg=211){
@@ -79,5 +80,5 @@ void plot_map(int pdg=211){
 
   
   prt_savepath ="data/plot_map";
-  prt_canvasSave(0);  
+  prt_canvasSave(2);  
 }

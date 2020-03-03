@@ -1,4 +1,4 @@
-#include "DrcPidFast.h"
+#include "DrcPidFast.cxx"
 
 void example(int pdg=211,double mom=6){
 

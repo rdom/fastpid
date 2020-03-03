@@ -9,4 +9,5 @@ b) pion/kaon separation power;
 ![alt text](https://raw.githubusercontent.com/rdom/fastpid/master/fastpid.png)
 
 Usage example:
-root loadlib.C example.C
+root example.C
+root loadlib.C plot_map.C

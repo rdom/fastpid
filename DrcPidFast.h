@@ -12,9 +12,13 @@
 
 // probability - normalized to 1 probability for e,mu,pi,k,p
 // sigma - deviation of the determined Cherenkov angle from expected in terms of Cherenkov track resolution
+// cangle - Cherenkov angle
+// cctr -  combined Cherenkov track resolution
 struct DrcPidInfo {
-    double probability[5];
-    double sigma[5];
+  double probability[5];
+  double sigma[5];
+  double cangle;
+  double cctr;
 };
 
 class DrcPidFast{
@@ -25,8 +29,12 @@ class DrcPidFast{
 
   // pdg - Particle Data Group code of the particle
   // mom - 3-momentum of the particle [GeV/c]
-  // err - error assosiated with track direction [mrad]
-  DrcPidInfo GetInfo(int pdg,TVector3 mom, double err=0);
+  // track_err - error assosiated with track direction [mrad]
+  DrcPidInfo GetInfo(int pdg,TVector3 mom, double track_err=0);
+
+  // p - momentum of the particle [GeV/c]
+  // theta - polar angle of the particle [deg]
+  DrcPidInfo GetInfo(int pdg, double p, double theta, double track_err=0);
   TH2F *GetTrrMap(){ return fTrrMap; }
   
  private:
