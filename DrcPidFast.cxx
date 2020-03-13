@@ -9,11 +9,15 @@ DrcPidFast::DrcPidFast(){
   fMass[4]=0.938272;
   
   // read Cherenkov track resolution map
-  TFile* file = TFile::Open("ctr_map_p1_0.95.root");
+  ReadMap("ctr_map_p1_0.95.root");
+}
+
+
+void  DrcPidFast::ReadMap(TString name){
+  TFile* file = TFile::Open(name);
   fTrrMap = new TH2F();
   file->GetObject("htrr", fTrrMap);  
 }
-
 
 DrcPidInfo DrcPidFast::GetInfo(int pdg,TVector3 mom, double track_err){
   double p = mom.Mag();
@@ -36,7 +40,7 @@ DrcPidInfo DrcPidFast::GetInfo(int pdg, double p, double theta, double track_err
   info.cctr=0;
   
   // check range
-  if(theta<25 || theta>140) return info;
+  if(theta<25 || theta>153) return info;
       
   int bin = fTrrMap->FindBin(theta,(p>10)? 10:p); // ctr map is till 10 GeV/c
   double ctr = fTrrMap->GetBinContent(bin);  // Cherenkov track resolution [mrad]

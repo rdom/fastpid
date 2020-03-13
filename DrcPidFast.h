@@ -27,6 +27,9 @@ class DrcPidFast{
   DrcPidFast();
   ~DrcPidFast(){}
 
+  // read Cherenkov track resolution map from a file
+  void ReadMap(TString name);
+  
   // pdg - Particle Data Group code of the particle
   // mom - 3-momentum of the particle [GeV/c]
   // track_err - error assosiated with track direction [mrad]

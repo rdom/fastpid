@@ -5,7 +5,7 @@
 void plot_map(int pdg=211){
 
   prt_setRootPalette(1);
-  TH2F *hsep = new TH2F("hsep",";polar angle [deg];momentum [GeV/c]",116,24.5,140.5,50,0.1,10.1);
+  TH2F *hsep = new TH2F("hsep","#pi/K separation power [s.d.] ;polar angle [deg];momentum [GeV/c]",129,24.5,153.5,50,0.1,10.1);
   TH1F *hPi = new TH1F("hPi","hPi",500,-100,100);
   TH1F *hK = new TH1F("hK","hK",500,-100,100);
   double m1=0,m2=0,s1=0,s2=0,sep=0;
@@ -17,8 +17,8 @@ void plot_map(int pdg=211){
     if(m>3){
       delete hK;
       delete hPi;
-      hK = new TH1F("hK","hK",200,-15,15);
-      hPi = new TH1F("hPi","hPi",200,-15,15);
+      hK = new TH1F("hK","hK",200,-20,20);
+      hPi = new TH1F("hPi","hPi",200,-20,20);
     }
     if(m<1){
       delete hK;
@@ -28,7 +28,7 @@ void plot_map(int pdg=211){
     }
     std::cout<<"m "<<m<<std::endl;
     
-    for(int t=25; t<=140; t++){
+    for(int t=25; t<=153; t++){
       TVector3 mom(0,0,m);
       mom.RotateX(t/180.*TMath::Pi());
       for(int i=0; i<1000; i++){
@@ -78,6 +78,11 @@ void plot_map(int pdg=211){
   hsep->SetMaximum(10);
   hsep->SetMinimum(1);
 
+
+  // draw ctr map
+  prt_canvasAdd("map_ctr",800,500);
+  pid.GetTrrMap()->SetTitle("Cherenkov track resolution [mrad]");
+  pid.GetTrrMap()->Draw("colz");
   
   prt_savepath ="data/plot_map";
   prt_canvasSave(2);  
