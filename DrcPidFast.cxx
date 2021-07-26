@@ -41,7 +41,7 @@ DrcPidInfo DrcPidFast::GetInfo(int pdg, double p, double theta, double track_err
   info.cctr = 0;
 
   // check range
-  if (theta < 20 || theta > 160){
+  if (theta < 19.99 || theta > 160.01){
     std::cout<<"theta out of [20,160] deg range: "<<theta<<std::endl;    
   }
 
@@ -54,9 +54,6 @@ DrcPidInfo DrcPidFast::GetInfo(int pdg, double p, double theta, double track_err
   double ctr = fTrrMap->GetBinContent(bin);             // Cherenkov track resolution [mrad]
   double cctr =
     sqrt(ctr * ctr + track_err * track_err) * 0.001; // combined Cherenkov track resolution[rad]
-
-  std::cout<<"ctr "<<ctr<<std::endl;
-  
   
   // 1.46907 - fused silica
   double true_cangle = acos(sqrt(p * p + fMass[pid] * fMass[pid]) / p / 1.46907);
