@@ -10,6 +10,19 @@ DrcPidFast::DrcPidFast() {
 
   // read Cherenkov track resolution map
   ReadMap("ctr_map_p1_0.95.root");
+
+  // multiple scattering for 17 mm thick radiator at 30 deg
+  fMs_mom = new TF1("", "expo(0)+expo(2)+expo(4)");
+  fMs_mom->SetParameters(4.40541e+00, -5.52436e+00, 2.35058e+00, -1.02703e+00, 9.55032e-01,
+                        -1.48500e-01);
+
+  fMs_thickness = new TF1("", "pol1");
+  //fMs_thickness->SetParameters(4.5, 0.0357143); // 17 mm bar
+  fMs_thickness->SetParameters(3.5,0.0214286); // 10 mm bar
+
+  TF1 *fMs_thickness_17 = new TF1("", "pol1");
+  fMs_thickness_17->SetParameters(4.5, 0.0357143); // 17 mm bar
+  fMs_thickness_max = fMs_thickness_17->Eval(70);
 }
 
 void DrcPidFast::ReadMap(TString name) {
@@ -45,19 +58,27 @@ DrcPidInfo DrcPidFast::GetInfo(int pdg, double p, double theta, double track_err
     std::cout<<"theta out of [20,160] deg range: "<<theta<<std::endl;    
   }
 
-  // ctr map is for theta = [25,153] and p =[0,10] GeV/c
+  double ms_mom_err = fMs_mom->Eval(p); // vector deviation after radiator 
+
+  double alpha = (theta < 90) ? 90 - theta : theta - 90;
+  double ms_thick_frac = fMs_thickness->Eval(alpha) / fMs_thickness_max;
+  
+  // 0.35 for averaging direction vector over the radiator thickness
+  double ms_err = 0.35 * ms_mom_err * ms_thick_frac;
+
+  // ctr map is for theta = [25,153] and p = [0,10] GeV/c
   if (theta < 25) theta = 25;
   if (theta > 153) theta = 153;
   if (p > 10) p = 10;
-
-  int bin = fTrrMap->FindBin(theta, p);
-  double ctr = fTrrMap->GetBinContent(bin);             // Cherenkov track resolution [mrad]
-  double cctr =
-    sqrt(ctr * ctr + track_err * track_err) * 0.001; // combined Cherenkov track resolution[rad]
   
+  int bin = fTrrMap->FindBin(theta, p);  
+  double ctr = fTrrMap->GetBinContent(bin);             // Cherenkov track resolution [mrad]
+  double cctr = sqrt(ctr * ctr + track_err * track_err + ms_err * ms_err) *
+                0.001; // combined Cherenkov track resolution[rad]
+
   // 1.46907 - fused silica
   double true_cangle = acos(sqrt(p * p + fMass[pid] * fMass[pid]) / p / 1.46907);
-  true_cangle += fRand.Gaus(0, cctr);
+  true_cangle += gRandom->Gaus(0, cctr);
 
   // return default values if momentum below Cherenkov threshold (true_cangle is NaN)
   if (true_cangle != true_cangle) return info;

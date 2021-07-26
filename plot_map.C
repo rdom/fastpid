@@ -32,7 +32,7 @@ void plot_map(int pdg = 211) {
       TVector3 mom(0, 0, m);
       mom.RotateX(t / 180. * TMath::Pi());
       for (int i = 0; i < 2000; i++) {
-        info = pid.GetInfo(pdg, mom, 0.45);
+        info = pid.GetInfo(pdg, mom, 0.5);
         hPi->Fill(info.sigma[2]);
         hK->Fill(info.sigma[3]);
       }
@@ -76,7 +76,7 @@ void plot_map(int pdg = 211) {
   hsep->Draw("colz");
   hsep->GetYaxis()->SetRangeUser(0.6, 10);
   hsep->SetMaximum(10);
-  hsep->SetMinimum(1);
+   hsep->SetMinimum(1);
 
   // draw ctr map
   prt_canvasAdd("map_ctr", 800, 500);

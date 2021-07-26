@@ -8,6 +8,8 @@
 #include "TH2F.h"
 #include "TVector3.h"
 #include "TRandom.h"
+#include "TF1.h"
+
 #include <iostream>
 
 // probability - normalized to 1 probability for e,mu,pi,k,p
@@ -43,7 +45,8 @@ class DrcPidFast {
   int get_pid(int pdg);
   TH2F *fTrrMap;
   double fMass[5];
-  TRandom fRand;
+  TF1 *fMs_mom, *fMs_thickness;
+  double fMs_thickness_max;
 };
 
 #endif

@@ -1,6 +1,6 @@
 #include "DrcPidFast.cxx"
 
-void example(int pdg = 211, double mom = 1) {
+void example(int pdg = 211, double mom = 6) {
 
   DrcPidFast pid;
 
@@ -12,9 +12,9 @@ void example(int pdg = 211, double mom = 1) {
 
   DrcPidInfo info;
   for (int i = 0; i < 1000; i++) {
-    info = pid.GetInfo(pdg, momentum, 3.0);
+    info = pid.GetInfo(pdg, momentum, 0.5);
     hPi->Fill(info.sigma[2]);
-    hK->Fill(info.sigma[0]);
+    hK->Fill(info.sigma[3]);
   }
 
   auto r1 = hPi->Fit("gaus", "S");
