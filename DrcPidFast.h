@@ -25,7 +25,10 @@ struct DrcPidInfo {
 class DrcPidFast {
 
  public:
-  DrcPidFast();
+
+  // barid = 0 for 17 mm thickness of the radiator
+  // barid = 1 for 10 mm thickness of the radiator
+  DrcPidFast(int barid = 0);
   ~DrcPidFast() {}
 
   // read Cherenkov track resolution map from a file
