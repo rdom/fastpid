@@ -32,7 +32,7 @@ void plot_map(int pdg = 211) {
       TVector3 mom(0, 0, m);
       mom.RotateX(t / 180. * TMath::Pi());
       for (int i = 0; i < 2000; i++) {
-        info = pid.GetInfo(pdg, mom, 0.5);
+        info = pid.GetInfo(pdg, mom, 0.5, 0);
         hPi->Fill(info.sigma[2]);
         hK->Fill(info.sigma[3]);
       }

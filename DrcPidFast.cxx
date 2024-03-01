@@ -1,6 +1,6 @@
 #include "DrcPidFast.h"
 
-DrcPidFast::DrcPidFast(int barid) {
+DrcPidFast::DrcPidFast() {
 
   fMass[0] = 0.000511;
   fMass[1] = 0.105658;
@@ -13,18 +13,14 @@ DrcPidFast::DrcPidFast(int barid) {
 
   // multiple scattering for 17 mm thick radiator at 30 deg
   fMs_mom = new TF1("", "expo(0)+expo(2)+expo(4)");
-  fMs_mom->SetParameters(4.40541e+00, -5.52436e+00, 2.35058e+00, -1.02703e+00, 9.55032e-01,
-                        -1.48500e-01);
-  // fMs_mom->SetParameters(9.39815e-01, -1.48243e-01, 4.69733e+00, -4.33960e+00, 2.19745e+00,
-  //                       -9.68617e-01);
+  fMs_mom->SetParameters(9.39815e-01, -1.48243e-01, 4.69733e+00, -4.33960e+00, 2.19745e+00,
+                        -9.68617e-01);
 
-  fMs_thickness = new TF1("", "pol1");
+  fMs_thickness_17 = new TF1("", "pol1");
+  fMs_thickness_17->SetParameters(4.2, 0.034); // 17 mm raidator bar
 
-  if (barid == 1) fMs_thickness->SetParameters(3.5, 0.0214286); // 10 mm bar
-  else fMs_thickness->SetParameters(4.5, 0.0357143);            // 17 mm bar
-
-  TF1 *fMs_thickness_17 = new TF1("", "pol1");
-  fMs_thickness_17->SetParameters(4.5, 0.0357143); // 17 mm bar
+  fMs_thickness_10 = new TF1("", "pol1");
+  fMs_thickness_10->SetParameters(3.6, 0.021); // 10 mm radiator bar
   fMs_thickness_max = fMs_thickness_17->Eval(70);
 }
 
@@ -34,13 +30,13 @@ void DrcPidFast::ReadMap(TString name) {
   file->GetObject("htrr", fTrrMap);
 }
 
-DrcPidInfo DrcPidFast::GetInfo(int pdg, TVector3 mom, double track_err) {
+DrcPidInfo DrcPidFast::GetInfo(int pdg, TVector3 mom, double track_err, int thickness) {
   double p = mom.Mag();
   double theta = mom.Theta() * TMath::RadToDeg();
-  return GetInfo(pdg, p, theta, track_err);
+  return GetInfo(pdg, p, theta, track_err, thickness);
 }
 
-DrcPidInfo DrcPidFast::GetInfo(int pdg, double p, double theta, double track_err) {
+DrcPidInfo DrcPidFast::GetInfo(int pdg, double p, double theta, double track_err, int thickness) {
 
   // double theta = 2.0*atan(exp(-eta))*TMath::RadToDeg();
 
@@ -64,10 +60,14 @@ DrcPidInfo DrcPidFast::GetInfo(int pdg, double p, double theta, double track_err
   double ms_mom_err = fMs_mom->Eval(p); // vector deviation after radiator 
 
   double alpha = (theta < 90) ? 90 - theta : theta - 90;
-  double ms_thick_frac = fMs_thickness->Eval(alpha) / fMs_thickness_max;
+
+  double ms_thick_frac;
+  if (thickness == 10) ms_thick_frac = fMs_thickness_10->Eval(alpha) / fMs_thickness_max;
+  else ms_thick_frac = fMs_thickness_17->Eval(alpha) / fMs_thickness_max;
   
-  // 0.31 for averaging direction vector over the radiator thickness
-  double ms_err = 0.31 * ms_mom_err * ms_thick_frac;
+  // 0.28 for averaging direction vector over the radiator thickness
+  double ms_err = 0.22 * ms_mom_err * ms_thick_frac;
+  // double ms_err = 0.45 * ms_mom_err * ms_thick_frac;
 
   // ctr map is for theta = [25,153] and p = [0,10] GeV/c
   if (theta < 25) theta = 25;
