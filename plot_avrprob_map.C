@@ -1,5 +1,7 @@
 #if defined(__ACLIC__)
+#include "DrcPidFast.h"
 #include "../prttools/PrtTools.h"
+R__LOAD_LIBRARY(../prtdirc/build/libPrt.so)
 #else
 #include "DrcPidFast.h"
 R__LOAD_LIBRARY(../prtdirc/build/libPrt.so)
@@ -137,20 +139,20 @@ void plot_avrprob_map(int pid = 3, int charge = 1, double tphi = -1) {
 
 
 
-        lut += Form("%4d %2d %2.2f %6.2f %2.2f", t.pdg(pid), charge, m, (double)theta, phi);
+        lut += Form("%d %d %2.2f %2.2f %2.2f", t.pdg(pid), charge, m, (double)theta, phi);
         for (int h = 0; h < nh; h++) {
 	  if (h == 1) continue;
           lut += Form(" %3.4f", eff[h]);
         }
 	lut += "\n";
-	// std::cout << "lut " << lut << std::endl;
+        // std::cout << "lut " << lut << std::endl;
 	
 	if (tphi > 0) break;	
       }
     }
   }
 
-  t.write_string("hpdirc.lut",lut);
+  t.write_string("hpdirc_"+names[pid] +".lut",lut);
   gStyle->SetOptStat(0);
   for (int h = 0; h < nh; h++) {
     if (h == 1) continue; // no muons

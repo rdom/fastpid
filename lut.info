@@ -1,0 +1,14 @@
+Description of PID LUT's columns:
+
+1) PDG code of the particle
+2) charge
+3) momentum
+4) polar angle
+5) azimuthal angle
+6) probability for electron
+7) probability for pion
+8) probability for kaon
+9) probability for proton
+
+Probabilities are normalized to 1.
+If all probabilities = 0 then PID is not possible.
