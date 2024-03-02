@@ -1,7 +1,7 @@
 Description of PID LUT's columns:
 
 1) PDG code of the particle (e 11, pi 211, K 321, p 2212)
-2) charge
+2) charge (-1,1)
 3) momentum, [0.2,10] with 0.2 GeV/c step, for higher momenta one should use 10 GeV/c
 4) polar angle, [25,160] with 1 degree step
 5) azimuthal angle [0-30] with 0.5 degree step, there is 12x azimuthal symmetry
