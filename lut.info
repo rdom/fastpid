@@ -2,9 +2,11 @@ Description of PID LUT's columns:
 
 1) PDG code of the particle
 2) charge
-3) momentum
-4) polar angle
-5) azimuthal angle
+3) momentum, bins = {0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85,
+                     0.9, 0.95, 1,   1.25, 1.5, 1.75, 2,   2.25, 2.5, 2.75, 3,   4,    5,   6} [GeV/c]
+		     for higher momenta one should use 6 GeV/c
+4) polar angle, [25-160] degree with 1 degree step
+5) azimuthal angle [0-30] with 0.5 degree step, there is 12x azimuthal symmetry. 
 6) probability for electron
 7) probability for pion
 8) probability for kaon
