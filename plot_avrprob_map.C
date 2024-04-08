@@ -18,6 +18,21 @@ void plot_avrprob_map(int pid = 3, int charge = 1, double tphi = -1) {
   const int nh = 5;
   TString lnames[] = {"e", "#mu", "#pi", "K", "p"};
   TString names[] = {"e", "mu", "pi", "K", "p"};
+
+  const int npphi = 28;
+  TH2F *hphimap[9][npphi];
+  double bins[] = {0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85,
+                   0.9, 0.95, 1,   1.25, 1.5, 1.75, 2,   2.25, 2.5, 2.75, 3,   4,    5,   6};
+  int pdglist[] = {-11, -13, 211, 321, 2212};
+
+  if (charge == -1) {
+    for (int i = 0; i < nh; i++) {
+      names[i] += "-";
+      lnames[i] += "^{-}";
+      pdglist[i] *= -1;
+    }
+  }
+
   TH1F *hlh[nh];
   TH2F *heffmap[nh];
   for (int h = 0; h < nh; h++) {
@@ -39,20 +54,34 @@ void plot_avrprob_map(int pid = 3, int charge = 1, double tphi = -1) {
   // separation pover vs efficiency assuming perfect Gaussians
   TF1 *fsep_eff = new TF1("eff", "50+19.38*x+1.14*TMath::Sq(x)-1.758*pow(x,3)+0.3586*pow(x,4)-0.03067*pow(x,5)+0.0009852*pow(x,6)",0,10);
 
+ 
   // read phi maps
-  const int npphi = 28;
-  TH2F *hphimap[9][npphi];
-  double bins[] = {0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85,
-                   0.9, 0.95, 1,   1.25, 1.5, 1.75, 2,   2.25, 2.5, 2.75, 3,   4,    5,   6};
-  int pdglist[] = {-11, -13, 211, 321, 2212};
   auto f = new TFile("allphimaps.root");
   
   for (int h = 0; h < nh; h++) {
     for (int pm = 0; pm < npphi; pm++) {
       TString n = Form("phimap_%d_%2.2f", pdglist[h], bins[pm]);
+      if(charge == -1) n.ReplaceAll("-2212","2212"); // flip map for antiprotons
       n.ReplaceAll(".00", "");
       n = n.Strip(TString::EStripType::kTrailing, '0');
       hphimap[h][pm] = (TH2F *)f->Get(n);
+      
+      if(charge == -1 && h == 4){ // flip map for antiprotons
+	TH2F * flip =(TH2F*)(hphimap[h][pm]->Clone());	
+	int xx = hphimap[h][pm]->GetNbinsX();
+	int yy = hphimap[h][pm]->GetNbinsY();
+	for (int i = 1; i <= xx; i++) {
+	  for (int j = 1; j <= yy; j++) {
+	    int b = hphimap[h][pm]->GetBin(i, j);
+	    double val = hphimap[h][pm]->GetBinContent(b);
+	    flip->SetBinContent(flip->GetBin(i, yy-j), val);
+	  }
+	}
+	hphimap[h][pm] = flip;
+      }
+      // hphimap[h][pm]->Draw("colz");
+      // gPad->Update();
+      // gPad->WaitPrimitive();
     }
   }
 
@@ -163,5 +192,5 @@ void plot_avrprob_map(int pid = 3, int charge = 1, double tphi = -1) {
     heffmap[h]->SetMinimum(0);
   }  
 
-  t.save_canvas("data/plot_avrprob_map", 0);
+  t.save_canvas("data/plot_avrprob_map_n", 0);
 }
